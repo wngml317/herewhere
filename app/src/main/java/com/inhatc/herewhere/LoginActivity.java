@@ -1,40 +1,39 @@
 package com.inhatc.herewhere;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+
+public class LoginActivity extends AppCompatActivity {
 
     Button btnLogin, btnJoin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
         btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-                startActivity(intent);
+                //Intent intent = new Intent(getApplicationContext(), /* 로그인완료Activity.class */);
+                // 로그인 정보 같이 보내기
+                //startActivity(intent);
             }
         });
 
         /*
-        btnJoin = findViewById(R.id.btnJoin);
         btnJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(getApplicationContext(),  회원가입Activity.class);
+                //Intent intent = new Intent(getApplicationContext(), 회원가입Activity.class );
                 //startActivity(intent);
             }
         });
-         */
-
+        */
     }
 }
