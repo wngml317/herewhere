@@ -25,16 +25,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*
+
         btnJoin = findViewById(R.id.btnJoin);
         btnJoin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(getApplicationContext(),  회원가입Activity.class);
-                //startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(),  JoinActivity.class);
+                startActivity(intent);
             }
         });
-         */
+
 
     }
 }
