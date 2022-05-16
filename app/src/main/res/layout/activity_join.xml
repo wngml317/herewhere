@@ -44,7 +44,7 @@
         <EditText
             android:id="@+id/inputID"
             android:layout_width="200dp"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:hint="아이디"
             android:textColor="@color/light_gray"
             android:backgroundTint="@color/light_gray"
@@ -56,7 +56,7 @@
         <Button
             android:id="@+id/btnCheck"
             android:layout_width="100dp"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:text="중복확인"
             app:layout_constraintTop_toBottomOf="@id/whiteSpace"
             app:layout_constraintRight_toRightOf="parent"
@@ -65,7 +65,7 @@
         <EditText
             android:id="@+id/inputPW"
             android:layout_width="300dp"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:hint="비밀번호"
             android:textColor="@color/light_gray"
@@ -77,7 +77,7 @@
         <EditText
             android:id="@+id/inputPW2"
             android:layout_width="300dp"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:hint="비밀번호 확인"
             android:textColor="@color/light_gray"
@@ -87,12 +87,12 @@
             app:layout_constraintRight_toRightOf="parent" />
 
         <EditText
-            android:id="@+id/inputPhone"
+            android:id="@+id/inputName"
             android:layout_width="300dp"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:inputType="number"
-            android:hint="휴대폰 번호"
+            android:hint="이름"
             android:textColor="@color/light_gray"
             android:backgroundTint="@color/light_gray"
             app:layout_constraintTop_toBottomOf="@+id/inputPW2"
@@ -100,25 +100,12 @@
             app:layout_constraintRight_toRightOf="parent" />
 
         <EditText
-            android:id="@+id/inputName"
+            android:id="@+id/inputPhone"
             android:layout_width="300dp"
-            android:layout_height="50dp"
+            android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:inputType="number"
-            android:hint="이름"
-            android:textColor="@color/light_gray"
-            android:backgroundTint="@color/light_gray"
-            app:layout_constraintTop_toBottomOf="@+id/inputPhone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <EditText
-            android:id="@+id/inputBirth"
-            android:layout_width="300dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:inputType="number"
-            android:hint="생년월일 8자리 숫자입력"
+            android:hint="휴대폰 번호"
             android:textColor="@color/light_gray"
             android:backgroundTint="@color/light_gray"
             app:layout_constraintTop_toBottomOf="@+id/inputName"
@@ -126,9 +113,37 @@
             app:layout_constraintRight_toRightOf="parent" />
 
         <EditText
+            android:id="@+id/inputPhone2"
+            android:layout_width="300dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:inputType="number"
+            android:hint="보호자 번호"
+            android:textColor="@color/light_gray"
+            android:backgroundTint="@color/light_gray"
+            app:layout_constraintTop_toBottomOf="@+id/inputPhone"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+
+        <EditText
+            android:id="@+id/inputBirth"
+            android:layout_width="300dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="10dp"
+            android:inputType="number"
+            android:hint="생년월일 8자리 숫자입력"
+            android:textColor="@color/light_gray"
+            android:backgroundTint="@color/light_gray"
+            app:layout_constraintTop_toBottomOf="@+id/inputPhone2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <EditText
             android:id="@+id/inputHeight"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+            android:layout_width="95dp"
+            android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:inputType="number"
             android:hint="키"
@@ -141,8 +156,8 @@
 
         <EditText
             android:id="@+id/inputWeight"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+            android:layout_width="95dp"
+            android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:inputType="number"
             android:hint="몸무게"
@@ -154,8 +169,8 @@
 
         <Spinner
             android:id="@+id/spinner"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
+            android:layout_width="110dp"
+            android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:entries="@array/blood"
             app:layout_constraintTop_toBottomOf="@+id/inputBirth"
@@ -164,12 +179,12 @@
 
         <TextView
             android:id="@+id/txtGender"
-            android:layout_height="50dp"
             android:layout_width="100dp"
+            android:layout_height="45dp"
             android:layout_marginTop="10dp"
             android:text="성별"
             android:textSize="18dp"
-            android:paddingTop="15dp"
+            android:paddingTop="10dp"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintTop_toBottomOf="@+id/spinner"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -188,13 +203,13 @@
             <RadioButton
                 android:id="@+id/btnMan"
                 android:layout_width="100dp"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:text="남자" />
 
             <RadioButton
                 android:id="@+id/btnWoman"
                 android:layout_width="100dp"
-                android:layout_height="50dp"
+                android:layout_height="45dp"
                 android:text="여자"/>
         </RadioGroup>
 
