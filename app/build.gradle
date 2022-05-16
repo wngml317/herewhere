@@ -45,6 +45,8 @@ apply plugin: 'com.google.gms.google-services'
 
 
 dependencies {
+
+    implementation 'com.google.firebase:firebase-auth:21.0.1'
     implementation 'com.google.firebase:firebase-database:20.0.4'
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:30.0.1')
