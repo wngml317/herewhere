@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="blood">
-        <item>A형</item>
-        <item>AB형</item>
-        <item>B형</item>
-        <item>O형</item>
+        <item>RH+ A</item>
+        <item>RH+ AB</item>
+        <item>RH+ B</item>
+        <item>RH+ O</item>
+        <item>RH- A</item>
+        <item>RH- AB</item>
+        <item>RH- B</item>
+        <item>RH- O</item>
     </string-array>
 </resources>
