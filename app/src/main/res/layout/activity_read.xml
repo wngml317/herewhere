@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+
+        <ImageView
+            android:id="@+id/mountain"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/mountain"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_gray"
+            app:layout_constraintTop_toBottomOf="@+id/mountain"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/areaContents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/top_bar">
+
+        <View
+            android:id="@+id/whiteSpace1"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtFunction1"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="| NFC 태그 인식"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/whiteSpace1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <ImageView
+            android:id="@+id/imgNFC"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:background="@drawable/contactless"
+            android:layout_marginTop="15dp"
+            app:layout_constraintTop_toBottomOf="@id/txtFunction1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/txtFunction1Content"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="태그 가까이 휴대폰을 대고 있어주세요.
+            인식 후에는 현재 본인의 위치 정보와 등산로 정보를 약도로 확인할 수 있습니다."
+            android:layout_marginTop="15dp"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/imgNFC"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <View
+            android:id="@+id/whiteSpace2"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            app:layout_constraintTop_toBottomOf="@id/txtFunction1Content" />
+
+        <TextView
+            android:id="@+id/txtFunction2"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="| 자동 구조 요청"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toBottomOf="@id/whiteSpace2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <ImageView
+            android:id="@+id/imgMove"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:background="@drawable/motion"
+            android:layout_marginTop="15dp"
+            app:layout_constraintTop_toBottomOf="@id/txtFunction2"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <TextView
+            android:id="@+id/txtFunction2Content"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="앱이 실행되는 동안 사용자의 움직임이 감지되지 않을 경우, 자동으로 구조 요청됩니다.
+            앱 실행 시 유의해주세요."
+            android:layout_marginTop="15dp"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/imgMove"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/areaContents" >
+
+        <View
+            android:id="@+id/whiteSpace3"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/btnInfo"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="개인정보 확인 및 수정"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@id/whiteSpace3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <Button
+            android:id="@+id/btnSOS"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="현재 위치로 바로 구조 요청"
+            android:textSize="16sp"
+            android:backgroundTint="#E56353"
+            app:layout_constraintTop_toBottomOf="@id/btnInfo"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
