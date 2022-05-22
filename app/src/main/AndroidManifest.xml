@@ -24,6 +24,8 @@
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".LoginActivity"></activity>
         <activity android:name=".JoinActivity"></activity>
+        <activity android:name=".MyinfoActivity"></activity>
+        <activity android:name=".UpdateinfoActivity"></activity>
     </application>
 
 </manifest>
