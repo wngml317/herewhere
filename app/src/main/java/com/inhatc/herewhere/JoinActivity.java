@@ -21,14 +21,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Array;
 
 public class JoinActivity extends AppCompatActivity {
 
-    private static final String TAG = "JoinActivity";
+    private static final String TAG = "JoinActivity:: ";
     private FirebaseAuth firebaseAuth;
 
     private EditText inputID;
@@ -52,16 +55,17 @@ public class JoinActivity extends AppCompatActivity {
     private String weight;
     private String gender;
 
+    private String idCheck = "";
+
     private RadioGroup radioGroup;
     private Spinner spinner;
-    ArrayAdapter<CharSequence> adapter = null;
-    String bloodType;
+    private String bloodType;
 
     private Button btnCheck;
     private Button btnJoin;
 
 
-    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = database.getReference();
 
     @Override
@@ -82,11 +86,11 @@ public class JoinActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinner);
         radioGroup = findViewById(R.id.Radiogroup);
 
-        btnCheck = (Button) findViewById(R.id.btnCheck);
-        btnJoin = (Button) findViewById(R.id.btnJoin);
+        btnCheck = findViewById(R.id.btnCheck);
+        btnJoin = findViewById(R.id.btnJoin);
 
         // 혈액형
-        adapter = ArrayAdapter.createFromResource(this, R.array.blood, android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.blood, android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -116,6 +120,19 @@ public class JoinActivity extends AppCompatActivity {
             }
         });
 
+        // 아이디 중복확인 버튼
+        btnCheck.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (inputID.getText().toString().equals("")) {
+                    Toast.makeText(JoinActivity.this, "아이디를 입력해주세요.", Toast.LENGTH_LONG).show();
+                } else {
+                    idDuplicateCheck(inputID.getText().toString());
+                }
+            }
+        });
+
         // 회원가입 버튼
         btnJoin.setOnClickListener(new View.OnClickListener() {
 
@@ -123,12 +140,31 @@ public class JoinActivity extends AppCompatActivity {
             public void onClick(View v) {
                 userInfoToString();
 
-                if (!ID.equals("") && !PW.equals("") && !name.equals("") && !phone.equals("") && !phone2.equals("") &&
-                    !birth.equals("") && !height.equals("") && !weight.equals("") && !bloodType.equals("") && !gender.equals("")) {
+                // 입력하지 않은 항목이 있을 때
+                if (ID.equals("") || PW.equals("") || name.equals("") || phone.equals("") || phone2.equals("") ||
+                        birth.equals("") || height.equals("") || weight.equals("") || bloodType.equals("") || gender.equals("")) {
+                    
+                    Toast.makeText(JoinActivity.this, "모든 항목을 입력해주세요.", Toast.LENGTH_LONG).show();
+                }
+                    
+                // 모든 항목을 입력하였을 때
+                if (!ID.equals("") && !PW.equals("") && !name.equals("") && !phone.equals("") && !phone2.equals("") && !birth.equals("")
+                        && !height.equals("") && !weight.equals("") && !bloodType.equals("") && !gender.equals("")) {
+
+                    // 아이디 중복 확인
+                    if (idCheck.equals("unavailable") || idCheck.equals("")) {
+                        Toast.makeText(JoinActivity.this, "아이디 중복확인을 해주세요.", Toast.LENGTH_LONG).show();
+                    }
+                    
+                    // 비밀번호 != 비밀번호 확인
                     if (pwCheck() == 0) {
+                        
                         Toast.makeText(JoinActivity.this, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_LONG).show();
                         Log.v(TAG, "PW: " + PW + ", PW2: " + PW2);
-                    } else {
+                    }
+
+                    // 회원가입 요건 충족
+                    if (idCheck.equals("available") && pwCheck() == 1){
                         createUser(ID, PW, phone, phone2, name, birth, height, weight, bloodType, gender);
                         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                         startActivity(intent);
@@ -138,6 +174,7 @@ public class JoinActivity extends AppCompatActivity {
         });
     }
 
+    // 입력항목 toString
     public void userInfoToString() {
         ID = inputID.getText().toString();
         PW = inputPW.getText().toString();
@@ -150,6 +187,7 @@ public class JoinActivity extends AppCompatActivity {
         weight = inputWeight.getText().toString();
     }
 
+    // 비밀번호 일치 확인
     public int pwCheck() {
         int pwCheck;
         if (PW2.equals(PW)) {
@@ -158,6 +196,42 @@ public class JoinActivity extends AppCompatActivity {
             pwCheck = 0;
 
         return pwCheck;
+    }
+
+    // 아이디 중복확인
+    private void idDuplicateCheck(String idCheck) {
+
+        // 입력한 아이디로 가입된 user가 있는지 확인
+        databaseReference.child("users").child(idCheck).child("id").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                String idAvailability;
+                idAvailability = (String) snapshot.getValue();
+
+                if (idAvailability == null) {
+                    Toast.makeText(JoinActivity.this, "사용할 수 있는 아이디입니다.", Toast.LENGTH_SHORT).show();
+                    idAvailability = "available";
+                    setIdCheck(idAvailability);
+                } else {
+                    idAvailability = "unavailable";
+                    setIdCheck(idAvailability);
+                    Log.v(TAG, "onDataChange_getIdValue: " + idAvailability);
+                    Toast.makeText(JoinActivity.this, "이미 사용하고 있는 아이디입니다.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "onCancelled_idDuplicateCheck: " + error.toException());
+            }
+        });
+
+    }
+
+    // set idCheck
+    private void setIdCheck(String idAvailability) {
+        idCheck = idAvailability;
     }
 
     // 회원가입
