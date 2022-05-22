@@ -73,16 +73,15 @@
         <View
             android:id="@+id/whiteSpace2"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="20dp"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/areaUserName"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             app:layout_constraintTop_toBottomOf="@id/whiteSpace2"
             android:layout_marginHorizontal="60dp"
-            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="14"
             android:gravity="center">
@@ -104,7 +103,7 @@
             <EditText
                 android:id="@+id/txtUserName"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="16dp"
@@ -115,10 +114,9 @@
         <LinearLayout
             android:id="@+id/areaUserPhone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             app:layout_constraintTop_toBottomOf="@id/areaUserName"
             android:layout_marginHorizontal="60dp"
-            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="14"
             android:gravity="center">
@@ -140,7 +138,7 @@
             <EditText
                 android:id="@+id/txtUserPhone"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="16dp"
@@ -151,10 +149,9 @@
         <LinearLayout
             android:id="@+id/areaGuardianPhone"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             app:layout_constraintTop_toBottomOf="@id/areaUserPhone"
             android:layout_marginHorizontal="60dp"
-            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="14"
             android:gravity="center">
@@ -176,7 +173,7 @@
             <EditText
                 android:id="@+id/txtGuardianPhone"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="16dp"
@@ -187,10 +184,9 @@
         <LinearLayout
             android:id="@+id/areaUserHeight"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             app:layout_constraintTop_toBottomOf="@id/areaGuardianPhone"
             android:layout_marginHorizontal="60dp"
-            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="14"
             android:gravity="center">
@@ -212,7 +208,7 @@
             <EditText
                 android:id="@+id/txtUserHeight"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="16dp"
@@ -223,10 +219,9 @@
         <LinearLayout
             android:id="@+id/areaUserWeight"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             app:layout_constraintTop_toBottomOf="@id/areaUserHeight"
             android:layout_marginHorizontal="60dp"
-            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="14"
             android:gravity="center">
@@ -248,7 +243,7 @@
             <EditText
                 android:id="@+id/txtUserWeight"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="7"
                 android:textColor="@color/black"
                 android:textSize="16dp"
@@ -259,10 +254,9 @@
         <LinearLayout
             android:id="@+id/areaUserBloodType"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             app:layout_constraintTop_toBottomOf="@id/areaUserWeight"
             android:layout_marginHorizontal="60dp"
-            android:layout_marginTop="10dp"
             android:orientation="horizontal"
             android:weightSum="14"
             android:gravity="center">
@@ -284,7 +278,7 @@
             <Spinner
                 android:id="@+id/spinner"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_weight="7"
                 android:entries="@array/blood" />
 
