@@ -1,13 +1,19 @@
 package com.inhatc.herewhere;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,13 +48,27 @@ public class UpdateinfoActivity extends AppCompatActivity {
     EditText userHeight;
     EditText userWeight;
     EditText userBirth;
-    EditText userGender;
     Button btnSave;
     ImageView userImg;
 
     Spinner spinner;
     String bloodType;
     int bloodTypeIndex;
+
+    RadioGroup radioGroup;
+    int genderIndex;
+    RadioButton radioBtnMan;
+    RadioButton radioBtnWoman;
+
+    String ID;
+    String PW;
+    String phone;
+    String guardianPhone;
+    String name;
+    String birth;
+    String height;
+    String weight;
+    String gender;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,10 +82,12 @@ public class UpdateinfoActivity extends AppCompatActivity {
         userHeight = findViewById(R.id.txtUserHeight);
         userWeight = findViewById(R.id.txtUserWeight);
         userBirth = findViewById(R.id.txtUserBirth);
-        userGender = findViewById(R.id.txtUserGender);
-        btnSave = findViewById(R.id.btnModify);
+        radioGroup = findViewById(R.id.Radiogroup);
+        btnSave = findViewById(R.id.btnSave);
         userImg = findViewById(R.id.imgUser);
         spinner = findViewById(R.id.spinner);
+        radioBtnMan = findViewById(R.id.btnMan);
+        radioBtnWoman = findViewById(R.id.btnWoman);
 
         // 임시 아이디
         String testID = "1sunny";
@@ -75,9 +97,102 @@ public class UpdateinfoActivity extends AppCompatActivity {
         displayProfileImg(userUri);
         // 개인정보를 나타내는 함수
         displayUserinfo(testID);
+
+        // 혈액형
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.blood, android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                bloodType = (String)spinner.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        // 성별
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkGender) {
+                switch(checkGender) {
+                    case R.id.btnMan:
+                        gender = "남자";
+                        break;
+                    case R.id.btnWoman:
+                        gender = "여자";
+                }
+            }
+        });
+
+        // 저장하기 버튼 클릭 이벤트
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getEditTextData();
+
+                // 입력하지 않은 항목이 있을 때
+                if (ID.equals("") || PW.equals("") || name.equals("") || phone.equals("") || guardianPhone.equals("") ||
+                        birth.equals("") || height.equals("") || weight.equals("") || bloodType.equals("") || gender.equals("")) {
+
+                    Toast.makeText(UpdateinfoActivity.this, "모든 항목을 입력해주세요.", Toast.LENGTH_LONG).show();
+                }
+
+                // 모든 항목을 입력하였을 때
+                if (!ID.equals("") && !PW.equals("") && !name.equals("") && !phone.equals("") && !guardianPhone.equals("") && !birth.equals("")
+                        && !height.equals("") && !weight.equals("") && !bloodType.equals("") && !gender.equals("")) {
+                    updateUser(ID, PW, phone ,guardianPhone, name, birth, height, weight, bloodType, gender);
+                }
+            }
+        });
+    }
+    
+    private void updateUser(String ID, String PW, String phone, String phone2, String name, String birth,
+                            String height, String weight, String bloodType, String gender) {
+        User user = new User(ID, PW, phone, phone2, name, birth, height, weight, bloodType, gender);
+
+        databaseReference.child("users").child(ID).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(UpdateinfoActivity.this, "수정을 완료하였습니다.", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), MyinfoActivity.class);
+                        intent.putExtra("id", ID);
+                        startActivity(intent);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(UpdateinfoActivity.this, "수정에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
-    private int getBloodIndex(String strBloodType){
+    public void getEditTextData(){
+        ID = userID.getText().toString();
+        name = userName.getText().toString();
+        phone = userPhone.getText().toString();
+        guardianPhone = userGuardianPhone.getText().toString();
+        height = userHeight.getText().toString();
+        weight = userWeight.getText().toString();
+        birth = userBirth.getText().toString();
+    }
+
+    public void checkGenderRadio(String strGender){
+        if(strGender.equals("남자")){
+            radioBtnMan.setChecked(true);
+        }else if(strGender.equals("여자")){
+            radioBtnWoman.setChecked(true);
+        }else{
+            radioBtnMan.setChecked(true);
+        }
+    }
+
+    public int getBloodIndex(String strBloodType){
         if(strBloodType.equals("RH+ A")){
             return 0;
         }else if(strBloodType.equals("RH+ AB")){
@@ -135,9 +250,12 @@ public class UpdateinfoActivity extends AppCompatActivity {
                     userHeight.setText(user.getHeight());
                     userWeight.setText(user.getWeight());
                     userBirth.setText(user.getBirth());
-                    userGender.setText(user.getGender());
+                    gender = String.valueOf(user.getGender());
+                    checkGenderRadio(user.getGender());
                     bloodTypeIndex = getBloodIndex(user.getBloodType());
                     spinner.setSelection(bloodTypeIndex);
+                    // 비밀번호는 UpdateinfoActivity에서 수정 불가
+                    PW = String.valueOf(user.getPW());
                 }
             }
         });
