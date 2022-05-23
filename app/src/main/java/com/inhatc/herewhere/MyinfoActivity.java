@@ -70,7 +70,7 @@ public class MyinfoActivity extends AppCompatActivity {
         String userUri = testID + ".png";
         // 프로필 사진을 나타내는 함수
         displayProfileImg(userUri);
-        // 데이터를 나타내는 함수
+        // 개인정보를 나타내는 함수
         displayUserinfo(testID);
 
         // 수정하기 버튼 클릭 이벤트
