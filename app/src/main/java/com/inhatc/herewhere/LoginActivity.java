@@ -95,9 +95,10 @@ public class LoginActivity extends AppCompatActivity {
                 pw_val = (String) snapshot.getValue();
 
                 if (PW.equals(pw_val)) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    Intent myIntent = new Intent(getApplicationContext(), ReadActivity.class);
                     // 로그인 정보 같이 보내기
-                    startActivity(intent);
+                    myIntent.putExtra("id", ID);
+                    startActivity(myIntent);
                 } else {
                     Log.v("LoginActivity:::", "onDataChange_getIdValue: " + pw_val);
                     Toast.makeText(LoginActivity.this, "비밀번호가 일치하지 않습니다..", Toast.LENGTH_SHORT).show();

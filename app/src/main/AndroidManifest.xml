@@ -26,6 +26,7 @@
         <activity android:name=".JoinActivity"></activity>
         <activity android:name=".MyinfoActivity"></activity>
         <activity android:name=".UpdateinfoActivity"></activity>
+        <activity android:name=".ReadActivity"></activity>
     </application>
 
 </manifest>
