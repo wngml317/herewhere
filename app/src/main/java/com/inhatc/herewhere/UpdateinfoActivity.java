@@ -1,10 +1,12 @@
 package com.inhatc.herewhere;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,6 +35,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.io.IOException;
+
 public class UpdateinfoActivity extends AppCompatActivity {
 
     private static final String TAG = "UpdateinfoActivity";
@@ -59,6 +63,8 @@ public class UpdateinfoActivity extends AppCompatActivity {
     int genderIndex;
     RadioButton radioBtnMan;
     RadioButton radioBtnWoman;
+
+    Uri filePath;
 
     String ID;
     String PW;
@@ -129,6 +135,17 @@ public class UpdateinfoActivity extends AppCompatActivity {
             }
         });
 
+        // 이미지 클릭 이벤트
+        userImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "이미지를 선택하세요."), 0);
+            }
+        });
+
         // 저장하기 버튼 클릭 이벤트
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -149,6 +166,21 @@ public class UpdateinfoActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 0 && resultCode == RESULT_OK){
+            filePath = data.getData();
+            Log.d(TAG, "uri:" + String.valueOf(filePath));
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                userImg.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
     
     private void updateUser(String ID, String PW, String phone, String phone2, String name, String birth,
