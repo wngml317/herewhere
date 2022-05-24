@@ -33,7 +33,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
 
@@ -96,13 +98,13 @@ public class UpdateinfoActivity extends AppCompatActivity {
         radioBtnWoman = findViewById(R.id.btnWoman);
 
         // 임시 아이디
-        String testID = "1sunny";
+        String loginID = "1sunny";
         // 사용자 프로필 사진 uri
-        String userUri = testID + ".png";
+        String userUri = loginID + ".png";
         // 프로필 사진을 나타내는 함수
         displayProfileImg(userUri);
         // 개인정보를 나타내는 함수
-        displayUserinfo(testID);
+        displayUserinfo(loginID);
 
         // 혈액형
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.blood, android.R.layout.simple_spinner_dropdown_item);
@@ -162,10 +164,43 @@ public class UpdateinfoActivity extends AppCompatActivity {
                 // 모든 항목을 입력하였을 때
                 if (!ID.equals("") && !PW.equals("") && !name.equals("") && !phone.equals("") && !guardianPhone.equals("") && !birth.equals("")
                         && !height.equals("") && !weight.equals("") && !bloodType.equals("") && !gender.equals("")) {
+                    uploadFile(loginID);
                     updateUser(ID, PW, phone ,guardianPhone, name, birth, height, weight, bloodType, gender);
                 }
             }
         });
+    }
+
+    private void uploadFile(String loginID) {
+        if (filePath != null) {
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            String filename = loginID + ".png";
+            StorageReference storageRef = storage.getReferenceFromUrl("gs://herewhere-468e5.appspot.com").child("profileImg/" + filename);
+            storageRef.putFile(filePath)
+                    //성공시
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.d(TAG, "파일 업로드 성공");
+                        }
+                    })
+                    //실패시
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "파일 업로드 실패");
+                        }
+                    })
+                    //진행중
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.d(TAG, "파일 업로드 진행중...");
+                        }
+                    });
+        } else {
+            Log.d(TAG, "업로드할 파일 없음");
+        }
     }
 
     @Override
