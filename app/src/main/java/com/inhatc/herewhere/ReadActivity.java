@@ -32,8 +32,9 @@ public class ReadActivity extends AppCompatActivity {
         btnInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(getApplicationContext(), Activity.class );
-//                startActivity(intent);
+                Intent intent = new Intent(getApplicationContext(), MyinfoActivity.class);
+                intent.putExtra("id", id);
+                startActivity(intent);
             }
         });
 
