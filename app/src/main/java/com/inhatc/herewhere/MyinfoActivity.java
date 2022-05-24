@@ -52,6 +52,9 @@ public class MyinfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myinfo);
 
+        Intent intent = getIntent();
+        String loginID = intent.getExtras().getString("id");
+
         userID = findViewById(R.id.txtUserID);
         userName = findViewById(R.id.txtUserName);
         userPhone = findViewById(R.id.txtUserPhone);
@@ -64,20 +67,19 @@ public class MyinfoActivity extends AppCompatActivity {
         btnModify = findViewById(R.id.btnModify);
         userImg = findViewById(R.id.imgUser);
 
-        // 임시 아이디
-        String testID = "1sunny";
         // 사용자 프로필 사진 uri
-        String userUri = testID + ".png";
+        String userUri = loginID + ".png";
         // 프로필 사진을 나타내는 함수
         displayProfileImg(userUri);
         // 개인정보를 나타내는 함수
-        displayUserinfo(testID);
+        displayUserinfo(loginID);
 
         // 수정하기 버튼 클릭 이벤트
         btnModify.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),UpdateinfoActivity.class);
+                Intent intent = new Intent(getApplicationContext(), UpdateinfoActivity.class);
+                intent.putExtra("id", loginID);
                 startActivity(intent);
             }
         });

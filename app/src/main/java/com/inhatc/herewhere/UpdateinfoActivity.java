@@ -83,6 +83,9 @@ public class UpdateinfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_updateinfo);
 
+        Intent intent = getIntent();
+        String loginID = intent.getExtras().getString("id");
+
         userID = findViewById(R.id.txtUserID);
         userName = findViewById(R.id.txtUserName);
         userPhone = findViewById(R.id.txtUserPhone);
@@ -97,8 +100,6 @@ public class UpdateinfoActivity extends AppCompatActivity {
         radioBtnMan = findViewById(R.id.btnMan);
         radioBtnWoman = findViewById(R.id.btnWoman);
 
-        // 임시 아이디
-        String loginID = "1sunny";
         // 사용자 프로필 사진 uri
         String userUri = loginID + ".png";
         // 프로필 사진을 나타내는 함수
@@ -211,6 +212,7 @@ public class UpdateinfoActivity extends AppCompatActivity {
             Log.d(TAG, "uri:" + String.valueOf(filePath));
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                userImg.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 userImg.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -226,7 +228,7 @@ public class UpdateinfoActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void unused) {
                         Toast.makeText(UpdateinfoActivity.this, "수정을 완료하였습니다.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), MyinfoActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), ReadActivity.class);
                         intent.putExtra("id", ID);
                         startActivity(intent);
                     }
@@ -295,7 +297,7 @@ public class UpdateinfoActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(getApplicationContext(), "프로필 사진 업로드 필요", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "프로필 사진 없음");
             }
         });
     }
