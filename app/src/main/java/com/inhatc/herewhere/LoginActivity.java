@@ -95,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
                 pw_val = (String) snapshot.getValue();
 
                 if (PW.equals(pw_val)) {
-                    Intent myIntent = new Intent(getApplicationContext(), ReadActivity.class);
+                    Intent myIntent = new Intent(getApplicationContext(), SettingActivity.class);
                     // 로그인 정보 같이 보내기
                     myIntent.putExtra("id", ID);
                     startActivity(myIntent);

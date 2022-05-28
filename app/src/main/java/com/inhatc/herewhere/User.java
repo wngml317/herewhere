@@ -11,6 +11,8 @@ public class User {
     String weight;
     String bloodType;
     String gender;
+    String motionSensor;
+    String guardianMessage;
 
     public User(){}
 
@@ -94,6 +96,22 @@ public class User {
         this.gender = gender;
     }
 
+    public String getMotionSensor() {
+        return motionSensor;
+    }
+
+    public void setMotionSensor(String motionSensor) {
+        this.motionSensor = motionSensor;
+    }
+
+    public String getGuardianMessage() {
+        return guardianMessage;
+    }
+
+    public void setGuardianMessage(String guardianMessage) {
+        this.guardianMessage = guardianMessage;
+    }
+
     public User(String ID, String PW, String phone, String phone2, String name, String birth,
                 String height, String weight, String bloodType, String gender) {
         this.ID = ID;
@@ -106,5 +124,8 @@ public class User {
         this.weight = weight;
         this.bloodType = bloodType;
         this.gender = gender;
+        this.motionSensor = "yes";
+        this.guardianMessage = "yes";
     }
+
 }

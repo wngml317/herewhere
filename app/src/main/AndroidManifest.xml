@@ -27,6 +27,10 @@
         <activity android:name=".MyinfoActivity"></activity>
         <activity android:name=".UpdateinfoActivity"></activity>
         <activity android:name=".ReadActivity"></activity>
+        <activity android:name=".SettingActivity"></activity>
+        <activity android:name=".NFCtagActivity"></activity>
+        <activity android:name=".MotionActivity"></activity>
+        <activity android:name=".MessageActivity"></activity>
     </application>
 
 </manifest>

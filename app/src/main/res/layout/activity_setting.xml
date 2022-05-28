@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:id="@+id/areaGuardianPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="60dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:weightSum="30"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:layout_weight="15"
+                app:layout_constraintLeft_toRightOf="@+id/mountain" />
+
+            <ImageView
+                android:id="@+id/mountain"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:background="@drawable/mountain"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <TextView
+                android:id="@+id/txtID"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:gravity="right"
+                android:layout_weight="15"
+                app:layout_constraintLeft_toRightOf="@+id/mountain" />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_gray"
+            app:layout_constraintTop_toBottomOf="@+id/areaGuardianPhone"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnTag"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="태그 인식"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnMotion"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="움직임 감지"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"/>
+
+        <Button
+            android:id="@+id/btnMessage"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="보호자 문자"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"/>
+
+        <Button
+            android:id="@+id/btnSOS"
+            android:layout_width="250dp"
+            android:layout_height="60dp"
+            android:text="현재위치 바로 구조"
+            android:textSize="20sp"
+            android:backgroundTint="#e56353"
+            android:layout_marginTop="50dp"/>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
