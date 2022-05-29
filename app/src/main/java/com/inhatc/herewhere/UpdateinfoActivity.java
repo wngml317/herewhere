@@ -62,7 +62,6 @@ public class UpdateinfoActivity extends AppCompatActivity {
     int bloodTypeIndex;
 
     RadioGroup radioGroup;
-    int genderIndex;
     RadioButton radioBtnMan;
     RadioButton radioBtnWoman;
 
