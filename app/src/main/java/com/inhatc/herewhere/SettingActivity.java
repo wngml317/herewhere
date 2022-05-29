@@ -1,6 +1,11 @@
 package com.inhatc.herewhere;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -11,6 +16,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,6 +49,16 @@ public class SettingActivity extends AppCompatActivity {
 
         id = myIntent.getExtras().getString("id"); /*String형*/
         txtID.setText(id+"님");
+
+        txtID.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent myIntent = new Intent(getApplicationContext(), MyinfoActivity.class);
+                // 로그인 정보 같이 보내기
+                myIntent.putExtra("id", id);
+                startActivity(myIntent);
+            }
+        });
 
         btnTag = findViewById(R.id.btnTag);
         btnTag.setOnClickListener(new View.OnClickListener() {
@@ -80,7 +97,7 @@ public class SettingActivity extends AppCompatActivity {
         btnSOS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendSosMessage();
+                //sendSosMessage();
             }
         });
 

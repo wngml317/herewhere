@@ -227,7 +227,7 @@ public class UpdateinfoActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(Void unused) {
                         Toast.makeText(UpdateinfoActivity.this, "수정을 완료하였습니다.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), ReadActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
                         intent.putExtra("id", ID);
                         startActivity(intent);
                     }
