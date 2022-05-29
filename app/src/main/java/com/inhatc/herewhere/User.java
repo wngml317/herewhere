@@ -113,7 +113,7 @@ public class User {
     }
 
     public User(String ID, String PW, String phone, String phone2, String name, String birth,
-                String height, String weight, String bloodType, String gender) {
+                String height, String weight, String bloodType, String gender, String motionSensor, String guardianMessage) {
         this.ID = ID;
         this.PW = PW;
         this.phone = phone;
@@ -124,8 +124,8 @@ public class User {
         this.weight = weight;
         this.bloodType = bloodType;
         this.gender = gender;
-        this.motionSensor = "yes";
-        this.guardianMessage = "yes";
+        this.motionSensor = motionSensor;
+        this.guardianMessage = guardianMessage;
     }
 
 }

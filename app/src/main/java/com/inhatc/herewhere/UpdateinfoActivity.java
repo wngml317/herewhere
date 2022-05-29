@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -36,8 +37,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UpdateinfoActivity extends AppCompatActivity {
 
@@ -64,6 +68,8 @@ public class UpdateinfoActivity extends AppCompatActivity {
     RadioGroup radioGroup;
     RadioButton radioBtnMan;
     RadioButton radioBtnWoman;
+    SwitchButton switchMotion;
+    SwitchButton switchMessage;
 
     Uri filePath;
 
@@ -76,6 +82,8 @@ public class UpdateinfoActivity extends AppCompatActivity {
     String height;
     String weight;
     String gender;
+    String motionSensor;
+    String guardianMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +106,8 @@ public class UpdateinfoActivity extends AppCompatActivity {
         spinner = findViewById(R.id.spinner);
         radioBtnMan = findViewById(R.id.btnMan);
         radioBtnWoman = findViewById(R.id.btnWoman);
+        switchMotion = findViewById(R.id.switchMotion);
+        switchMessage = findViewById(R.id.switchMessage);
 
         // 사용자 프로필 사진 uri
         String userUri = loginID + ".png";
@@ -137,6 +147,34 @@ public class UpdateinfoActivity extends AppCompatActivity {
             }
         });
 
+        // 움직임 감지 활성여부
+        switchMotion.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // 스위치 버튼 활성화
+                if (isChecked) {
+                    motionSensor = "yes";
+                } else {
+                    // 스위치 버튼 비활성화
+                    motionSensor = "no";
+                }
+            }
+        });
+
+        // 보호자 문자 전송 활성여부
+        switchMessage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // 스위치 버튼 활성화
+                if (isChecked) {
+                    guardianMessage = "yes";
+                } else {
+                    // 스위치 버튼 비활성화
+                    guardianMessage = "no";
+                }
+            }
+        });
+
         // 이미지 클릭 이벤트
         userImg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,17 +193,17 @@ public class UpdateinfoActivity extends AppCompatActivity {
                 getEditTextData();
 
                 // 입력하지 않은 항목이 있을 때
-                if (ID.equals("") || PW.equals("") || name.equals("") || phone.equals("") || guardianPhone.equals("") ||
-                        birth.equals("") || height.equals("") || weight.equals("") || bloodType.equals("") || gender.equals("")) {
+                if (ID.equals("") || PW.equals("") || name.equals("") || phone.equals("") || guardianPhone.equals("") || birth.equals("") || height.equals("")
+                        || weight.equals("") || bloodType.equals("") || gender.equals("") || motionSensor.equals("") || guardianMessage.equals("")) {
 
                     Toast.makeText(UpdateinfoActivity.this, "모든 항목을 입력해주세요.", Toast.LENGTH_LONG).show();
                 }
 
                 // 모든 항목을 입력하였을 때
-                if (!ID.equals("") && !PW.equals("") && !name.equals("") && !phone.equals("") && !guardianPhone.equals("") && !birth.equals("")
-                        && !height.equals("") && !weight.equals("") && !bloodType.equals("") && !gender.equals("")) {
+                if (!ID.equals("") && !PW.equals("") && !name.equals("") && !phone.equals("") && !guardianPhone.equals("") && !birth.equals("") && !height.equals("")
+                        && !weight.equals("") && !bloodType.equals("") && !gender.equals("") && !motionSensor.equals("") && !guardianMessage.equals("")) {
                     uploadFile(loginID);
-                    updateUser(ID, PW, phone ,guardianPhone, name, birth, height, weight, bloodType, gender);
+                    updateUser(ID, PW, phone ,guardianPhone, name, birth, height, weight, bloodType, gender, motionSensor, guardianMessage);
                 }
             }
         });
@@ -220,8 +258,8 @@ public class UpdateinfoActivity extends AppCompatActivity {
     }
     
     private void updateUser(String ID, String PW, String phone, String phone2, String name, String birth,
-                            String height, String weight, String bloodType, String gender) {
-        User user = new User(ID, PW, phone, phone2, name, birth, height, weight, bloodType, gender);
+                            String height, String weight, String bloodType, String gender, String motionSensor, String guardianMessage) {
+        User user = new User(ID, PW, phone, phone2, name, birth, height, weight, bloodType, gender, motionSensor, guardianMessage);
 
         databaseReference.child("users").child(ID).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -322,6 +360,21 @@ public class UpdateinfoActivity extends AppCompatActivity {
                     checkGenderRadio(user.getGender());
                     bloodTypeIndex = getBloodIndex(user.getBloodType());
                     spinner.setSelection(bloodTypeIndex);
+
+                    motionSensor = (String)user.getMotionSensor();
+                    if (motionSensor.equals("yes")) {
+                        switchMotion.setChecked(true);
+                    } else {
+                        switchMotion.setChecked(false);
+                    }
+
+                    guardianMessage = (String)user.getGuardianMessage();
+                    if (guardianMessage.equals("yes")) {
+                        switchMessage.setChecked(true);
+                    } else {
+                        switchMessage.setChecked(false);
+                    }
+
                     // 비밀번호는 UpdateinfoActivity에서 수정 불가
                     PW = String.valueOf(user.getPW());
                 }

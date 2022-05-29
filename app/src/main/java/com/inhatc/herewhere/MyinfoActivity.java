@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.kyleduo.switchbutton.SwitchButton;
 
 public class MyinfoActivity extends AppCompatActivity {
 
@@ -47,6 +48,12 @@ public class MyinfoActivity extends AppCompatActivity {
     Button btnModify;
     ImageView userImg;
 
+    SwitchButton switchMotion;
+    SwitchButton switchMessage;
+
+    String motionSensor;
+    String guardianMessage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +73,8 @@ public class MyinfoActivity extends AppCompatActivity {
         userGender = findViewById(R.id.txtUserGender);
         btnModify = findViewById(R.id.btnModify);
         userImg = findViewById(R.id.imgUser);
+        switchMotion = findViewById(R.id.switchMotion);
+        switchMessage = findViewById(R.id.switchMessage);
 
         // 사용자 프로필 사진 uri
         String userUri = loginID + ".png";
@@ -73,6 +82,9 @@ public class MyinfoActivity extends AppCompatActivity {
         displayProfileImg(userUri);
         // 개인정보를 나타내는 함수
         displayUserinfo(loginID);
+
+        switchMotion.setEnabled(false);
+        switchMessage.setEnabled(false);
 
         // 수정하기 버튼 클릭 이벤트
         btnModify.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +136,20 @@ public class MyinfoActivity extends AppCompatActivity {
                     userBloodType.setText(user.getBloodType());
                     userBirth.setText(user.getBirth());
                     userGender.setText(user.getGender());
+
+                    motionSensor = (String) user.getMotionSensor();
+                    if (motionSensor.equals("yes")) {
+                        switchMotion.setChecked(true);
+                    } else {
+                        switchMotion.setChecked(false);
+                    }
+
+                    guardianMessage = (String) user.getGuardianMessage();
+                    if (guardianMessage.equals("yes")) {
+                        switchMessage.setChecked(true);
+                    } else {
+                        switchMessage.setChecked(false);
+                    }
                 }
             }
         });
