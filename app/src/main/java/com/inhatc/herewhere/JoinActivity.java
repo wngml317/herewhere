@@ -8,6 +8,7 @@ import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,8 +27,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kyleduo.switchbutton.SwitchButton;
 
 import java.sql.Array;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JoinActivity extends AppCompatActivity {
 
@@ -54,12 +58,17 @@ public class JoinActivity extends AppCompatActivity {
     private String height;
     private String weight;
     private String gender;
+    private String motionSensor;
+    private String guardianMessage;
 
     private String idCheck = "";
 
     private RadioGroup radioGroup;
     private Spinner spinner;
     private String bloodType;
+
+    private SwitchButton switchMotion;
+    private SwitchButton switchMessage;
 
     private Button btnCheck;
     private Button btnJoin;
@@ -85,6 +94,11 @@ public class JoinActivity extends AppCompatActivity {
 
         spinner = findViewById(R.id.spinner);
         radioGroup = findViewById(R.id.Radiogroup);
+
+        switchMotion = findViewById(R.id.switchMotion);
+        switchMessage = findViewById(R.id.switchMessage);
+        motionSensor = "no";
+        guardianMessage = "no";
 
         btnCheck = findViewById(R.id.btnCheck);
         btnJoin = findViewById(R.id.btnJoin);
@@ -133,6 +147,34 @@ public class JoinActivity extends AppCompatActivity {
             }
         });
 
+        // 스위치버튼_움직임 감지
+        switchMotion.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // 스위치 버튼 활성화
+                if (isChecked) {
+                    motionSensor = "yes";
+                } else {
+                    // 스위치 버튼 비활성화
+                    motionSensor = "no";
+                }
+            }
+        });
+
+        // 스위치버튼_보호자 문자
+        switchMessage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // 스위치 버튼 활성화
+                if (isChecked) {
+                    guardianMessage = "yes";
+                } else {
+                    // 스위치 버튼 비활성화
+                    guardianMessage = "no";
+                }
+            }
+        });
+
         // 회원가입 버튼
         btnJoin.setOnClickListener(new View.OnClickListener() {
 
@@ -141,15 +183,15 @@ public class JoinActivity extends AppCompatActivity {
                 userInfoToString();
 
                 // 입력하지 않은 항목이 있을 때
-                if (ID.equals("") || PW.equals("") || name.equals("") || phone.equals("") || phone2.equals("") ||
-                        birth.equals("") || height.equals("") || weight.equals("") || bloodType.equals("") || gender.equals("")) {
+                if (ID.equals("") || PW.equals("") || name.equals("") || phone.equals("") || phone2.equals("") || birth.equals("") || height.equals("")
+                        || weight.equals("") || bloodType.equals("") || gender.equals("") || motionSensor.equals("") || guardianMessage.equals("")) {
                     
                     Toast.makeText(JoinActivity.this, "모든 항목을 입력해주세요.", Toast.LENGTH_LONG).show();
                 }
                     
                 // 모든 항목을 입력하였을 때
-                if (!ID.equals("") && !PW.equals("") && !name.equals("") && !phone.equals("") && !phone2.equals("") && !birth.equals("")
-                        && !height.equals("") && !weight.equals("") && !bloodType.equals("") && !gender.equals("")) {
+                if (!ID.equals("") && !PW.equals("") && !name.equals("") && !phone.equals("") && !phone2.equals("") && !birth.equals("") && !height.equals("")
+                        && !weight.equals("") && !bloodType.equals("") && !gender.equals("") && !motionSensor.equals("") && !guardianMessage.equals("")) {
 
                     // 아이디 중복 확인
                     if (idCheck.equals("unavailable") || idCheck.equals("")) {
@@ -165,7 +207,7 @@ public class JoinActivity extends AppCompatActivity {
 
                     // 회원가입 요건 충족
                     if (idCheck.equals("available") && pwCheck() == 1){
-                        createUser(ID, PW, phone, phone2, name, birth, height, weight, bloodType, gender);
+                        createUser(ID, PW, phone, phone2, name, birth, height, weight, bloodType, gender, motionSensor, guardianMessage);
                         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
                         startActivity(intent);
                     }
@@ -236,8 +278,8 @@ public class JoinActivity extends AppCompatActivity {
 
     // 회원가입
     private void createUser(String ID, String PW, String phone, String phone2, String name, String birth,
-                            String height, String weight, String bloodType, String gender) {
-        User user = new User(ID, PW, phone, phone2, name, birth, height, weight, bloodType, gender);
+                            String height, String weight, String bloodType, String gender, String motionSensor, String guardianMessage) {
+        User user = new User(ID, PW, phone, phone2, name, birth, height, weight, bloodType, gender, motionSensor, guardianMessage);
 
         databaseReference.child("users").child(ID).setValue(user).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
