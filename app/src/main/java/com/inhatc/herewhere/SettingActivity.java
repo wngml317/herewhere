@@ -1,9 +1,11 @@
 package com.inhatc.herewhere;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,7 +21,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -36,6 +41,12 @@ public class SettingActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = database.getReference();
+
+    private int locationRequestCode = 1000;
+
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    Location currentLocation;
 
     String id;
 
@@ -97,13 +108,53 @@ public class SettingActivity extends AppCompatActivity {
         btnSOS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //sendSosMessage();
+                settingGPS();
+                Location userLocation = getMyLocation();
+                if( userLocation != null ) {
+                    double latitude = userLocation.getLatitude();
+                    double longitude = userLocation.getLongitude();
+                    Log.d(TAG, "longitude=" + longitude + ", latitude=" + latitude);
+                    sendSosMessage(latitude, longitude);
+                }
             }
         });
 
     }
 
-    public void sendSosMessage(){
+    public Location getMyLocation(){
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "request for permission");
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, locationRequestCode);
+        } else {
+            Log.d(TAG, "already permission granted");
+            // 10초 간격으로 업데이트
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+            String locationProvider = LocationManager.GPS_PROVIDER;
+            currentLocation = locationManager.getLastKnownLocation(locationProvider);
+            if (currentLocation != null) {
+                double lng = currentLocation.getLongitude();
+                double lat = currentLocation.getLatitude();
+            }
+        }
+        return currentLocation;
+    }
+
+    private void settingGPS() {
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                Log.d(TAG, "settingGPS :: longitude=" + longitude + ", latitude=" + latitude);
+            }
+            public void onStatusChanged(String provider, int status, Bundle extras) {        }
+            public void onProviderEnabled(String provider) {        }
+            public void onProviderDisabled(String provider) {        }
+        };
+    }
+
+    public void sendSosMessage(double latitude, double longitude){
         databaseReference.child("users").child(id).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -122,14 +173,15 @@ public class SettingActivity extends AppCompatActivity {
                     String bloodType = user.getBloodType();
 
                     String sms = name + "님의 구조 요청. ( 사용자 정보 : 보호자 전화번호 " + guardianPhone + " / 생년월일 " +
-                            birth + " / 키 " + height + " / 몸무게 " + weight + " / 성별 " + gender + " / 혈액형 " + bloodType + " )" ;
+                            birth + " / 키 " + height + " / 몸무게 " + weight + " / 성별 " + gender + " / 혈액형 " + bloodType + " )" +
+                            "( 사용자 위치 정보 : 위도 " + latitude + " / 경도 " + longitude + " )";
                     Log.d(TAG, sms);
 
                     //String sosNo = "119";
 
                     try {
                         SmsManager smsManager = SmsManager.getDefault();
-                        smsManager.sendTextMessage(guardianPhone, null, sms, null, null);
+                        // smsManager.sendTextMessage(guardianPhone, null, sms, null, null);
                         // smsManager.sendTextMessage(sosNo, null, sms, null, null);
                         Toast.makeText(getApplicationContext(), "구조 요청 완료", Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
