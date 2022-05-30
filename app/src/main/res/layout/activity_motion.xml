@@ -66,8 +66,6 @@
             style="@style/SwitchButtonStyle"
             android:layout_width="100dp"
             android:layout_height="50dp"
-            app:kswTextOn="On"
-            app:kswTextOff="Off"
             android:layout_marginTop="30dp"
             android:layout_marginRight="30dp"
             app:layout_constraintEnd_toEndOf="parent"
