@@ -4,8 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -14,26 +14,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Herewhere">
+        <service
+            android:name=".herewhereService"
+            android:enabled="true"
+            android:exported="true"></service>
+
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/SplashTheme"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".LoginActivity"></activity>
-        <activity android:name=".JoinActivity"></activity>
-        <activity android:name=".MyinfoActivity"></activity>
-        <activity android:name=".UpdateinfoActivity"></activity>
-        <activity android:name=".ReadActivity"></activity>
-        <activity android:name=".SettingActivity"></activity>
-        <activity android:name=".NFCtagActivity"></activity>
-        <activity android:name=".MotionActivity"></activity>
-        <activity android:name=".MessageActivity"></activity>
+        <activity android:name=".MainActivity" />
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".JoinActivity" />
+        <activity android:name=".MyinfoActivity" />
+        <activity android:name=".UpdateinfoActivity" />
+        <activity android:name=".ReadActivity" />
+        <activity android:name=".SettingActivity" />
+        <activity android:name=".NFCtagActivity" />
+        <activity android:name=".MotionActivity" />
+        <activity android:name=".MessageActivity" />
     </application>
 
 </manifest>
