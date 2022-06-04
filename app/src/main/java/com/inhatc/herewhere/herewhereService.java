@@ -12,9 +12,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.telephony.SmsManager;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -27,6 +36,9 @@ public class herewhereService extends Service {
     private LocationManager locationManager;
     private LocationListener locationListener;
     Location currentLocation;
+
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = database.getReference();
 
     public herewhereService() {
     }
@@ -44,6 +56,7 @@ public class herewhereService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "service :: onStartCommand");
+        String id = intent.getExtras().getString("id");
 
         if(intent == null){
             return Service.START_STICKY;
@@ -68,6 +81,7 @@ public class herewhereService extends Service {
                                     double latitude = userLocation.getLatitude();
                                     double longitude = userLocation.getLongitude();
                                     Log.d(TAG, "service :: longitude=" + longitude + ", latitude=" + latitude);
+                                    sendMessage(longitude, latitude, id);
                                 }
                             }
                         }, 0);
@@ -118,5 +132,32 @@ public class herewhereService extends Service {
             public void onProviderEnabled(String provider) {        }
             public void onProviderDisabled(String provider) {        }
         };
+    }
+
+    public void sendMessage(double latitude, double longitude, String id){
+        databaseReference.child("users").child(id).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (!task.isSuccessful()) {
+                    Log.e(TAG, "Error getting data", task.getException());
+                }
+                else {
+                    Log.d(TAG, String.valueOf(task.getResult().getValue()));
+                    User user = task.getResult().getValue(User.class);
+                    String guardianPhone = user.getPhone2();
+                    String name = user.getName();
+
+                    String sms =  "보호자에게 " + name + "님의 위치 정보를 전송합니다. " + "( 위도 " + latitude + " / 경도 " + longitude + " )";
+                    Log.d(TAG, sms);
+
+                    try {
+                        SmsManager smsManager = SmsManager.getDefault();
+                        // smsManager.sendTextMessage(guardianPhone, null, sms, null, null);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 }
