@@ -1,7 +1,12 @@
 package com.inhatc.herewhere;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.security.identity.CipherSuiteNotSupportedException;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -9,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -54,13 +61,18 @@ public class MessageActivity extends AppCompatActivity {
                 activateGuardianMessage.put(id + "/" + "guardianMessage", "yes");
                 deactivateGuardianMessage.put(id + "/" + "guardianMessage", "no");
 
+                // service Intent
+                Intent serviceIntent = new Intent(getApplicationContext(), herewhereService.class);
+
                 // 스위치 버튼 활성화
                 if (isChecked) {
+                    permissionCheck(serviceIntent);
                     databaseReference.child("users").updateChildren(activateGuardianMessage);
                     Toast.makeText(MessageActivity.this, "일정시간마다 보호자에게 메세지를 전송합니다.", Toast.LENGTH_SHORT).show();
                 } else {
                     // 스위치 버튼 비활성화
                     databaseReference.child("users").updateChildren(deactivateGuardianMessage);
+                    stopService(serviceIntent);
                     Toast.makeText(MessageActivity.this, "보호자에게 메세지를 전송하지 않습니다.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -93,5 +105,22 @@ public class MessageActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void permissionCheck(Intent serviceIntent){
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        if(permissionCheck == PackageManager.PERMISSION_DENIED){
+            Toast.makeText(MessageActivity.this, "GPS 권한 설정을 항상 허용으로 변경하세요.", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "ACCESS_BACKGROUND_LOCATION::deny");
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent.setData(uri);
+            startActivity(intent);
+            finish();
+        }else{
+            Log.d(TAG, "ACCESS_BACKGROUND_LOCATION::allow");
+            startService(serviceIntent);
+        }
     }
 }

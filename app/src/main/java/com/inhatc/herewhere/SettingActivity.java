@@ -43,8 +43,6 @@ public class SettingActivity extends AppCompatActivity {
     private LocationListener locationListener;
     Location currentLocation;
 
-    String id;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +51,7 @@ public class SettingActivity extends AppCompatActivity {
         txtID = findViewById(R.id.txtID);
         Intent myIntent = getIntent(); /*데이터 수신*/
 
-        id = myIntent.getExtras().getString("id"); /*String형*/
+        String id = myIntent.getExtras().getString("id"); /*String형*/
         txtID.setText(id+"님");
 
         txtID.setOnClickListener(new View.OnClickListener() {
@@ -108,8 +106,8 @@ public class SettingActivity extends AppCompatActivity {
                 if( userLocation != null ) {
                     double latitude = userLocation.getLatitude();
                     double longitude = userLocation.getLongitude();
-                    Log.d(TAG, "longitude=" + longitude + ", latitude=" + latitude);
-                    sendSosMessage(latitude, longitude);
+                    Log.d(TAG, "onClick :: longitude=" + longitude + ", latitude=" + latitude);
+                    sendSosMessage(latitude, longitude, id);
                 }
             }
         });
@@ -121,6 +119,7 @@ public class SettingActivity extends AppCompatActivity {
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "request for permission");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, locationRequestCode);
+            getMyLocation();
         } else {
             Log.d(TAG, "already permission granted");
             // 10초 간격으로 업데이트
@@ -130,6 +129,8 @@ public class SettingActivity extends AppCompatActivity {
             if (currentLocation != null) {
                 double lng = currentLocation.getLongitude();
                 double lat = currentLocation.getLatitude();
+            }else{
+                getMyLocation();
             }
         }
         return currentLocation;
@@ -141,7 +142,7 @@ public class SettingActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
-                Log.d(TAG, "settingGPS :: longitude=" + longitude + ", latitude=" + latitude);
+                //Log.d(TAG, "settingGPS :: longitude=" + longitude + ", latitude=" + latitude);
             }
             public void onStatusChanged(String provider, int status, Bundle extras) {        }
             public void onProviderEnabled(String provider) {        }
@@ -149,7 +150,7 @@ public class SettingActivity extends AppCompatActivity {
         };
     }
 
-    public void sendSosMessage(double latitude, double longitude){
+    public void sendSosMessage(double latitude, double longitude, String id){
         databaseReference.child("users").child(id).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
