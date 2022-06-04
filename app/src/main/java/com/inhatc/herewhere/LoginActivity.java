@@ -1,6 +1,8 @@
 package com.inhatc.herewhere;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
+
+    private static final String TAG = "LoginActivity";
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = database.getReference();
@@ -96,8 +100,17 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (PW.equals(pw_val)) {
                     Intent myIntent = new Intent(getApplicationContext(), SettingActivity.class);
+
+                    SharedPreferences autoId = getSharedPreferences("id", MODE_PRIVATE);
+                    SharedPreferences.Editor autoIdEditor = autoId.edit();
+                    autoIdEditor.putString("id", ID);
+                    autoIdEditor.commit();
+
+                    Log.v(TAG, "autoId: " + autoId.getString("id", ""));
                     // 로그인 정보 같이 보내기
-                    myIntent.putExtra("id", ID);
+//                    myIntent.putExtra("id", ID);
+                    checkMotionSensor(ID);
+
                     startActivity(myIntent);
                 } else {
                     Log.v("LoginActivity:::", "onDataChange_getIdValue: " + pw_val);
@@ -112,4 +125,44 @@ public class LoginActivity extends AppCompatActivity {
         });
 
     }
+
+    // 움직임감지 활성여부 확인
+    public void checkMotionSensor(String id) {
+
+        // 로그인 한 회원의 motionSensor값 확인
+        databaseReference.child("users").child(id).child("motionSensor").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                String motionSensor_val;
+                motionSensor_val = (String) snapshot.getValue();
+
+                Log.v(TAG, "checkMotionSensor(): " + motionSensor_val);
+
+                if (motionSensor_val.equals("yes")) {
+                    motionSensor();
+                } else {
+                    Log.v(TAG, "checkMotionSensor()_motionSensor_val: no");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "checkMotionSensor_onCancelled: " + error.toException());
+            }
+        });
+    }
+
+    // 움직임감지 실행
+    public void motionSensor() {
+
+        Log.v(TAG, "motionSensor(): yes");
+        Log.v(TAG, "motionSensor: " + "움직임 감지 실행");
+        Intent serviceIntent = new Intent(this, MotionSensorService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+            Log.v(TAG, "Build.VERSION.SDK_INT >= Build.VERSION_CODES.0: " + "움직임 감지 실행");
+        } else startService(serviceIntent);
+    }
+
 }

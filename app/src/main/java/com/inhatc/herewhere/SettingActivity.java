@@ -1,12 +1,15 @@
 package com.inhatc.herewhere;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.util.Log;
@@ -23,12 +26,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SettingActivity extends AppCompatActivity {
 
-    private static final String TAG = "SettingActivity";
+    private static final String TAG = "SettingActivity::";
 
     private TextView txtID;
     private Button btnTag, btnMotion, btnMessage, btnSOS;
@@ -43,15 +48,18 @@ public class SettingActivity extends AppCompatActivity {
     private LocationListener locationListener;
     Location currentLocation;
 
+    String saveID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
+        SharedPreferences autoId = getSharedPreferences("id", MODE_PRIVATE);
+        String id = autoId.getString("id", "");
         txtID = findViewById(R.id.txtID);
-        Intent myIntent = getIntent(); /*데이터 수신*/
-
-        String id = myIntent.getExtras().getString("id"); /*String형*/
+//        Intent myIntent = getIntent(); /*데이터 수신*/
+//        String id = myIntent.getExtras().getString("id"); /*String형*/
         txtID.setText(id+"님");
 
         txtID.setOnClickListener(new View.OnClickListener() {

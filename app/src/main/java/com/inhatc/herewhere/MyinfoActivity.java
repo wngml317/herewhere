@@ -1,6 +1,7 @@
 package com.inhatc.herewhere;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -59,8 +60,10 @@ public class MyinfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myinfo);
 
-        Intent intent = getIntent();
-        String loginID = intent.getExtras().getString("id");
+        SharedPreferences autoId = getSharedPreferences("id", MODE_PRIVATE);
+        String loginID = autoId.getString("id", "");
+//        Intent intent = getIntent();
+//        String loginID = intent.getExtras().getString("id");
 
         userID = findViewById(R.id.txtUserID);
         userName = findViewById(R.id.txtUserName);

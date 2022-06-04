@@ -2,6 +2,7 @@ package com.inhatc.herewhere;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -48,9 +49,11 @@ public class MessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message);
 
         txtID = findViewById(R.id.txtID);
-        Intent myIntent = getIntent(); /*데이터 수신*/
+//        Intent myIntent = getIntent(); /*데이터 수신*/
+//        String id = myIntent.getExtras().getString("id"); /*String형*/
 
-        String id = myIntent.getExtras().getString("id"); /*String형*/
+        SharedPreferences autoId = getSharedPreferences("id", MODE_PRIVATE);
+        String id = autoId.getString("id", "");
         txtID.setText(id+"님");
 
         switchMessage = findViewById(R.id.switchMessage);
