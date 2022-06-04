@@ -1,10 +1,12 @@
 package com.inhatc.herewhere;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -90,8 +92,10 @@ public class UpdateinfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_updateinfo);
 
+        SharedPreferences autoId = getSharedPreferences("id", MODE_PRIVATE);
+        String loginID = autoId.getString("id", "");
         Intent intent = getIntent();
-        String loginID = intent.getExtras().getString("id");
+//        String loginID = intent.getExtras().getString("id");
 
         userID = findViewById(R.id.txtUserID);
         userName = findViewById(R.id.txtUserName);
@@ -266,7 +270,14 @@ public class UpdateinfoActivity extends AppCompatActivity {
                     public void onSuccess(Void unused) {
                         Toast.makeText(UpdateinfoActivity.this, "수정을 완료하였습니다.", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), SettingActivity.class);
-                        intent.putExtra("id", ID);
+
+                        // 움직임 감지 활성 여부 확인 후 MotionSensorService 작동
+                        if (motionSensor.equals("yes")) {
+                            startMotionSensorService("yes");
+                        } else {
+                            stopMotionSensorService("no");
+                        }
+//                        intent.putExtra("id", ID);
                         startActivity(intent);
                     }
                 })
@@ -380,5 +391,20 @@ public class UpdateinfoActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    // MotionSensorService 실행
+    public void startMotionSensorService(String motionSensor_val) {
+        Intent serviceIntent = new Intent(this, MotionSensorService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+            Log.v(TAG, "Build.VERSION.SDK_INT >= Build.VERSION_CODES.0: " + "움직임 감지 실행");
+        } else startService(serviceIntent);
+    }
+
+    // MotionSensorService 중지
+    public void stopMotionSensorService(String motionSensor_val) {
+        Intent serviceIntent = new Intent(this, MotionSensorService.class);
+        stopService(serviceIntent);
     }
 }

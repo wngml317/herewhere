@@ -1,7 +1,9 @@
 package com.inhatc.herewhere;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -41,9 +43,11 @@ public class MotionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_motion);
 
         txtID = findViewById(R.id.txtID);
-        Intent myIntent = getIntent(); /*데이터 수신*/
+//        Intent myIntent = getIntent(); /*데이터 수신*/
 
-        String id = myIntent.getExtras().getString("id"); /*String형*/
+        SharedPreferences autoId = getSharedPreferences("id", MODE_PRIVATE);
+        String id = autoId.getString("id", "");
+//        String id = myIntent.getExtras().getString("id"); /*String형*/
         txtID.setText(id+"님");
 
         // 움직임 감지 활성여부 확인 후 스위치버튼 체크
@@ -62,10 +66,12 @@ public class MotionActivity extends AppCompatActivity {
                 if (isChecked) {
                     databaseReference.child("users").updateChildren(activateMotionSensor);
                     Toast.makeText(MotionActivity.this, "움직임 감지가 활성화 되었습니다.", Toast.LENGTH_SHORT).show();
+                    startMotionSensorService("yes");
                 } else {
                     // 스위치 버튼 비활성화
                     databaseReference.child("users").updateChildren(deactivateMotionSensor);
                     Toast.makeText(MotionActivity.this, "움직임 감지가 비활성화 되었습니다.", Toast.LENGTH_SHORT).show();
+                    stopMotionSensorService("no");
                 }
             }
         });
@@ -87,6 +93,7 @@ public class MotionActivity extends AppCompatActivity {
                     switchMotion.setChecked(true);
                 } else {
                     Log.v(TAG, "motionSensor_val: " + motionSensor_val);
+                    stopMotionSensorService(motionSensor_val);
                     switchMotion.setChecked(false);
                 }
             }
@@ -97,5 +104,20 @@ public class MotionActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    // MotionSensorService 실행
+    public void startMotionSensorService(String motionSensor_val) {
+        Intent serviceIntent = new Intent(this, MotionSensorService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent);
+            Log.v(TAG, "Build.VERSION.SDK_INT >= Build.VERSION_CODES.0: " + "움직임 감지 실행");
+        } else startService(serviceIntent);
+    }
+
+    // MotionSensorService 중지
+    public void stopMotionSensorService(String motionSensor_val) {
+        Intent serviceIntent = new Intent(this, MotionSensorService.class);
+        stopService(serviceIntent);
     }
 }
