@@ -87,13 +87,15 @@ public class UpdateinfoActivity extends AppCompatActivity {
     String motionSensor;
     String guardianMessage;
 
+    String loginID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_updateinfo);
 
         SharedPreferences autoId = getSharedPreferences("id", MODE_PRIVATE);
-        String loginID = autoId.getString("id", "");
+        loginID = autoId.getString("id", "");
         Intent intent = getIntent();
 //        String loginID = intent.getExtras().getString("id");
 
@@ -277,6 +279,14 @@ public class UpdateinfoActivity extends AppCompatActivity {
                         } else {
                             stopMotionSensorService("no");
                         }
+
+                        // 보호자 문자 전송 활성 여부 확인 후 herewhereService 작동
+                        if (guardianMessage.equals("yes")) {
+                            startMessageService("yes");
+                        } else {
+                            stopMessageService("no");
+                        }
+
 //                        intent.putExtra("id", ID);
                         startActivity(intent);
                     }
@@ -405,6 +415,19 @@ public class UpdateinfoActivity extends AppCompatActivity {
     // MotionSensorService 중지
     public void stopMotionSensorService(String motionSensor_val) {
         Intent serviceIntent = new Intent(this, MotionSensorService.class);
+        stopService(serviceIntent);
+    }
+
+    // MessageService 실행
+    public void startMessageService(String motionSensor_val) {
+        Intent serviceIntent = new Intent(this, MessageService.class);
+        serviceIntent.putExtra("id", loginID);
+        startService(serviceIntent);
+    }
+
+    // MessageService 중지
+    public void stopMessageService(String motionSensor_val) {
+        Intent serviceIntent = new Intent(this, MessageService.class);
         stopService(serviceIntent);
     }
 }
