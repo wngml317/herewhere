@@ -121,22 +121,23 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private String permissionCheck(){
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
-        if(permissionCheck == PackageManager.PERMISSION_DENIED){
-            Toast.makeText(MessageActivity.this, "GPS 권한 설정을 항상 허용으로 변경하세요.", Toast.LENGTH_SHORT).show();
+        int gpsPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
+        int smsPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS);
+        String state;
+        if(gpsPermissionCheck == PackageManager.PERMISSION_GRANTED && smsPermissionCheck == PackageManager.PERMISSION_GRANTED){
+            Log.d(TAG, "ACCESS_BACKGROUND_LOCATION::allow");
+            state = "allow";
+        }else{
+            Toast.makeText(MessageActivity.this, "GPS 및 SMS 권한 설정을 항상 허용으로 변경하세요.", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "ACCESS_BACKGROUND_LOCATION::deny");
             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             Uri uri = Uri.fromParts("package", getPackageName(), null);
             intent.setData(uri);
             startActivity(intent);
-            String state = "deny";
-            return state;
-        }else{
-            Log.d(TAG, "ACCESS_BACKGROUND_LOCATION::allow");
-            String state = "allow";
-            return state;
+            state = "deny";
         }
+        return state;
     }
 
     // MessageService 실행
