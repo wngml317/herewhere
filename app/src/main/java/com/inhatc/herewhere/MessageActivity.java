@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.security.identity.CipherSuiteNotSupportedException;
@@ -43,6 +44,8 @@ public class MessageActivity extends AppCompatActivity {
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = database.getReference();
 
+    String id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +56,7 @@ public class MessageActivity extends AppCompatActivity {
 //        String id = myIntent.getExtras().getString("id"); /*String형*/
 
         SharedPreferences autoId = getSharedPreferences("id", MODE_PRIVATE);
-        String id = autoId.getString("id", "");
+        id = autoId.getString("id", "");
         txtID.setText(id+"님");
 
         switchMessage = findViewById(R.id.switchMessage);
@@ -69,21 +72,21 @@ public class MessageActivity extends AppCompatActivity {
                 activateGuardianMessage.put(id + "/" + "guardianMessage", "yes");
                 deactivateGuardianMessage.put(id + "/" + "guardianMessage", "no");
 
-                // service Intent
-                Intent serviceIntent = new Intent(getApplicationContext(), herewhereService.class);
-                serviceIntent.putExtra("id", id);
-
                 // 스위치 버튼 활성화
                 if (isChecked) {
-                    permissionCheck();
-                    startService(serviceIntent);
-                    databaseReference.child("users").updateChildren(activateGuardianMessage);
-                    Toast.makeText(MessageActivity.this, "일정시간마다 보호자에게 메세지를 전송합니다.", Toast.LENGTH_SHORT).show();
+                    String state = permissionCheck();
+                    if(state.equals("allow")){
+                        databaseReference.child("users").updateChildren(activateGuardianMessage);
+                        Toast.makeText(MessageActivity.this, "문자 전송 기능 활성화", Toast.LENGTH_SHORT).show();
+                        startMessageService("yes");
+                    }else{
+                        finish();
+                    }
                 } else {
                     // 스위치 버튼 비활성화
                     databaseReference.child("users").updateChildren(deactivateGuardianMessage);
-                    stopService(serviceIntent);
-                    Toast.makeText(MessageActivity.this, "보호자에게 메세지를 전송하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MessageActivity.this, "문자 전송 기능 비활성화", Toast.LENGTH_SHORT).show();
+                    stopMessageService("no");
                 }
             }
         });
@@ -117,7 +120,7 @@ public class MessageActivity extends AppCompatActivity {
 
     }
 
-    private void permissionCheck(){
+    private String permissionCheck(){
         int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION);
         if(permissionCheck == PackageManager.PERMISSION_DENIED){
             Toast.makeText(MessageActivity.this, "GPS 권한 설정을 항상 허용으로 변경하세요.", Toast.LENGTH_SHORT).show();
@@ -127,9 +130,25 @@ public class MessageActivity extends AppCompatActivity {
             Uri uri = Uri.fromParts("package", getPackageName(), null);
             intent.setData(uri);
             startActivity(intent);
-            finish();
+            String state = "deny";
+            return state;
         }else{
             Log.d(TAG, "ACCESS_BACKGROUND_LOCATION::allow");
+            String state = "allow";
+            return state;
         }
+    }
+
+    // MessageService 실행
+    public void startMessageService(String motionSensor_val) {
+        Intent serviceIntent = new Intent(this, MessageService.class);
+        serviceIntent.putExtra("id", id);
+        startService(serviceIntent);
+    }
+
+    // MessageService 중지
+    public void stopMessageService(String motionSensor_val) {
+        Intent serviceIntent = new Intent(this, MessageService.class);
+        stopService(serviceIntent);
     }
 }

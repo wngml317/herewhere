@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -16,13 +16,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Herewhere">
         <service
-            android:name=".herewhereService"
+            android:name=".MessageService"
             android:enabled="true"
             android:exported="true"></service>
         <service
             android:name=".MotionSensorService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".SplashActivity"
