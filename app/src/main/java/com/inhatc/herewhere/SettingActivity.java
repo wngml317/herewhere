@@ -9,8 +9,10 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,6 +46,7 @@ public class SettingActivity extends AppCompatActivity {
     private DatabaseReference databaseReference = database.getReference();
 
     private int locationRequestCode = 1000;
+    private int SMS_SEND_PERMISSION = 1;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -109,27 +113,50 @@ public class SettingActivity extends AppCompatActivity {
         btnSOS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                settingGPS();
-                Location userLocation = getMyLocation();
-                if( userLocation != null ) {
-                    double latitude = userLocation.getLatitude();
-                    double longitude = userLocation.getLongitude();
-                    Log.d(TAG, "onClick :: longitude=" + longitude + ", latitude=" + latitude);
-                    sendSosMessage(latitude, longitude, id);
+                String state = smsPermissionCheck();
+                if(state.equals("allow")){
+                    settingGPS();
+                    Location userLocation = getMyLocation();
+                    if( userLocation != null ) {
+                        double latitude = userLocation.getLatitude();
+                        double longitude = userLocation.getLongitude();
+                        Log.d(TAG, "onClick :: longitude=" + longitude + ", latitude=" + latitude);
+                        sendSosMessage(latitude, longitude, id);
+                    }
                 }
             }
         });
 
     }
 
+    private String smsPermissionCheck(){
+        int smsPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS);
+        String state;
+        if(smsPermissionCheck == PackageManager.PERMISSION_GRANTED){
+            Log.d(TAG, "ACCESS_BACKGROUND_SMS::allow");
+            state = "allow";
+        }else{
+            Toast.makeText(SettingActivity.this, "SMS 권한 설정을 허용으로 변경하세요.", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "ACCESS_BACKGROUND_SMS::deny");
+            //ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, SMS_SEND_PERMISSION);
+            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            Uri uri = Uri.fromParts("package", getPackageName(), null);
+            intent.setData(uri);
+            startActivity(intent);
+            state = "deny";
+        }
+        return state;
+    }
+
     public Location getMyLocation(){
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "request for permission");
+            Log.d(TAG, "ACCESS_BACKGROUND_LOCATION::deny");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, locationRequestCode);
             getMyLocation();
         } else {
-            Log.d(TAG, "already permission granted");
+            Log.d(TAG, "ACCESS_BACKGROUND_LOCATION::allow");
             // 10초 간격으로 업데이트
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
             String locationProvider = LocationManager.GPS_PROVIDER;
@@ -175,16 +202,20 @@ public class SettingActivity extends AppCompatActivity {
                     String weight = user.getWeight();
                     String gender = user.getGender();
                     String bloodType = user.getBloodType();
+                    //String sosNo = "119";
 
                     String sms = name + "님의 구조 요청. ( 사용자 정보 : 보호자 전화번호 " + guardianPhone + " / 생년월일 " +
                             birth + " / 키 " + height + " / 몸무게 " + weight + " / 성별 " + gender + " / 혈액형 " + bloodType + " )" +
                             "( 사용자 위치 정보 : 위도 " + latitude + " / 경도 " + longitude + " )";
                     Log.d(TAG, sms);
 
-                    //String sosNo = "119";
+                    String testPhone = "전화번호 입력";
+                    String testSMS = "구조요청/홍주희/여/20001017/180cm/79kg/RH+ O/보호자:010-1234-1234/위도:37.421/경도:-122.084";
+                    Log.d(TAG, "testSMS :: " + testSMS);
 
                     try {
                         SmsManager smsManager = SmsManager.getDefault();
+                        smsManager.sendTextMessage(testPhone, null, testSMS, null, null);
                         // smsManager.sendTextMessage(guardianPhone, null, sms, null, null);
                         // smsManager.sendTextMessage(sosNo, null, sms, null, null);
                         Toast.makeText(getApplicationContext(), "구조 요청 완료", Toast.LENGTH_LONG).show();
