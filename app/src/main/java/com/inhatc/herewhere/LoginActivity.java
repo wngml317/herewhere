@@ -100,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (PW.equals(pw_val)) {
                     Intent myIntent = new Intent(getApplicationContext(), SettingActivity.class);
+                    myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                     SharedPreferences autoId = getSharedPreferences("id", MODE_PRIVATE);
                     SharedPreferences.Editor autoIdEditor = autoId.edit();
@@ -109,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
                     Log.v(TAG, "autoId: " + autoId.getString("id", ""));
                     // 로그인 정보 같이 보내기
 //                    myIntent.putExtra("id", ID);
-                    checkMotionSensor(ID);
+                    // checkMotionSensor(ID);
 
                     startActivity(myIntent);
                 } else {
