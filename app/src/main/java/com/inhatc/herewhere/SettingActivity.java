@@ -230,7 +230,7 @@ public class SettingActivity extends AppCompatActivity {
                             "( 사용자 위치 정보 : 위도 " + latitude + " / 경도 " + longitude + " )";
                     Log.d(TAG, sms);
 
-                    String testPhone = "전화번호 입력";
+                    String testPhone = "01023625681";
                     String testSMS = "구조요청/홍주희/여/20001017/180cm/79kg/RH+ O/보호자:010-1234-1234/위도:37.421/경도:-122.084";
                     Log.d(TAG, "testSMS :: " + testSMS);
 

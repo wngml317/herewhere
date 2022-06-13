@@ -87,6 +87,13 @@
             인식 후에는 현재 본인의 위치 정보와 등산로 정보를 약도로 확인할 수 있습니다."
             android:textSize="16sp" />
 
+        <TextView
+            android:id="@+id/txtTagMsg"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text="" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
