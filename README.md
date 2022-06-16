@@ -46,6 +46,21 @@
   
   <br>
   
+## 🛠 Tech
+    
+ OS :
+```
+Android(SDK Version 31)
+```
+Database :
+```
+Firebase
+```
+Language :
+```
+Java
+```
+    
  ## 📌 Dependencies
   
   ```
